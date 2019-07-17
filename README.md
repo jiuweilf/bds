@@ -2,11 +2,11 @@
 ![logo](./docs/bds-logo.png)
 
 ## Introduction
-Blockchain Data Service (BDS) is that JD Cloud uses technical ways to store the chain-like and unstructured data of blockchain and synchronizes them to  database service in real time, meanwhile provides a tool of data visualization.
+JD Cloud Blockchain Data Service (BDS) is a realtime data aggregating, analyzing and visualization service for chain-like unstructured data from all kinds of 3rd party Blockchains
 
-Splitter is a separate module of the open source project which is blockchain data service (BDS) and provides data analysis services
+Splitter is the key module of Blockchain Data Service (BDS) and provides data analysis capability.
 
-Splitter is responsible for consuming blockchain data from message queue (kafka) and inserting data into persistent data storage services (relational database, data warehouse, etc.).
+Splitter is responsible for consuming blockchain data from message queue (kafka) and inserting data into persistent data storage services (relational database, data warehouse, etc.) for further processing
 
 ## Architecture 
 ![Architecture](./docs/bds-architecture.jpg)
