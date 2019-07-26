@@ -351,13 +351,6 @@ func (s *BTCSplitter) SaveBlock(data *BTCBlockData) error {
 				return nil
 			}
 			for i := blocks[0].Height; i >= data.Block.Height; i-- {
-				err = s.RevertBlock(i, tx)
-				if err != nil {
-					_ = tx.Rollback()
-					log.DetailError(err)
-					stats.Add(MetricDatabaseRollback, 1)
-					return err
-				}
 				if s.cfg.OmniEnable {
 					err = s.RevertTetherAddress(i, tx)
 					if err != nil {
@@ -366,6 +359,13 @@ func (s *BTCSplitter) SaveBlock(data *BTCBlockData) error {
 						stats.Add(MetricDatabaseRollback, 1)
 						return err
 					}
+				}
+				err = s.RevertBlock(i, tx)
+				if err != nil {
+					_ = tx.Rollback()
+					log.DetailError(err)
+					stats.Add(MetricDatabaseRollback, 1)
+					return err
 				}
 				stats.Add(MetricRevertBlock, 1)
 			}
@@ -681,6 +681,11 @@ func (s *BTCSplitter) RevertTetherAddress(height int64, tx *service.Transaction)
 			return err
 		}
 		addressList = append(addressList, addressInfo)
+	}
+	sql = fmt.Sprintf("DELETE FROM btc_tether_address where address in (SELECT sending_address FROM btc_omni_transaction WHERE block_height=%d UNION SELECT reference_address FROM btc_omni_transaction WHERE block_height=%d)", height, height)
+	_, err = tx.Exec(sql)
+	if err != nil {
+		return err
 	}
 	_, err = tx.BatchInsert(addressList)
 	if err != nil {
