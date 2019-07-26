@@ -22,7 +22,7 @@ Before compiling and running BDS, you must install go's compilation environment 
 1. Set the path of project : `$GOPATH/src/github.com/jdcloud-bds/bds/`
 2. Input`go build -v github.com/jdcloud-bds/bds/cmd/bds-splitter`，compile to get executable file *bds-splitter*
 3. Build new configuration file *splitter.conf*,  see `/config/splitter_example.conf` configuration file template
-4. Run programe `./bds-splitter -c splitter.conf`
+4. Run program `./bds-splitter -c splitter.conf`
 
 ### Install confluent and kafka
 #### Install kafka
