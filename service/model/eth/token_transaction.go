@@ -15,7 +15,7 @@ type TokenTransaction struct {
 	Timestamp              int64                `xorm:"timestamp int notnull index"`
 	TokenAddress           string               `xorm:"token_address char(40) notnull"`
 	LogIndex               int64                `xorm:"log_index int notnull"`
-	IsRemoved              bool                 `xorm:"is_removed tinyint notnull"`
+	IsRemoved              int                  `xorm:"is_removed tinyint notnull"`
 }
 
 func (t TokenTransaction) TableName() string {

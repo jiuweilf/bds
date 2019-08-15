@@ -7,6 +7,7 @@ import (
 	"github.com/jdcloud-bds/bds/common/jsonrpc"
 	"github.com/jdcloud-bds/bds/common/kafka"
 	"github.com/jdcloud-bds/bds/common/log"
+	"github.com/jdcloud-bds/bds/config"
 	"github.com/jdcloud-bds/bds/service"
 	model "github.com/jdcloud-bds/bds/service/model/eth"
 	"github.com/xeipuuv/gojsonschema"
@@ -242,7 +243,8 @@ func (s *ETHSplitter) SaveBlock(data *ETHBlockData) error {
 	}
 	blockTemp := new(model.Block)
 	blockTemp.Height = data.Block.Height
-	has, err := tx.Get(blockTemp)
+	//has, err := tx.Get(blockTemp)
+	has, err := tx.Where("height=?", data.Block.Height).Get(blockTemp)
 	if err != nil {
 		_ = tx.Rollback()
 		log.DetailError(err)
@@ -397,9 +399,11 @@ func (s *ETHSplitter) RevertBlock(height int64, tx *service.Transaction) error {
 		return err
 	}
 	//revert token account by rpc
-	err = revertTokenAccount(height, tx, s.remoteHandler)
-	if err != nil {
-		return err
+	if config.SplitterConfig.DatabaseETHSetting.Type != "postgres" {
+		err = revertTokenAccount(height, tx, s.remoteHandler)
+		if err != nil {
+			return err
+		}
 	}
 
 	//revert miner by height
@@ -449,11 +453,11 @@ func (s *ETHSplitter) RevertBlock(height int64, tx *service.Transaction) error {
 	return nil
 }
 
-type TokenAccountBalance struct {
-	Address      string
-	TokenAddress string
-	Balance      *big.Int
-}
+//type TokenAccountBalance struct {
+//	Address      string
+//	TokenAddress string
+//	Balance      *big.Int
+//}
 
 //check json schema
 func (s *ETHSplitter) jsonSchemaValid(data string) (bool, error) {
